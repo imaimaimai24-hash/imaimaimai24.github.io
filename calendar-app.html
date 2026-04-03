@@ -10,6 +10,7 @@
     <title>Googleカレンダー予定登録</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -17,6 +18,7 @@
             padding: 20px;
             padding-top: env(safe-area-inset-top, 40px);
         }
+
         .container {
             max-width: 500px;
             margin: 0 auto;
@@ -25,16 +27,21 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             overflow: hidden;
         }
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 20px;
             text-align: center;
         }
+
         .header h1 { font-size: 22px; margin-bottom: 4px; }
         .header p { font-size: 12px; opacity: 0.9; }
+
         .content { padding: 16px; }
+
         .section { margin-bottom: 20px; }
+
         .section-title {
             font-size: 13px;
             font-weight: 700;
@@ -43,6 +50,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
         .info-box {
             background: #e3f2fd;
             border-left: 4px solid #2196f3;
@@ -53,6 +61,18 @@
             margin-bottom: 12px;
             line-height: 1.5;
         }
+
+        .warn-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #856404;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
         button {
             border: none;
             border-radius: 12px;
@@ -63,62 +83,134 @@
             transition: all 0.2s;
             -webkit-tap-highlight-color: transparent;
         }
+
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             width: 100%;
             margin-bottom: 8px;
         }
+
         .btn-primary:active { opacity: 0.8; transform: scale(0.98); }
+
         .btn-primary.recording {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             animation: pulse 1.5s infinite;
         }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        .btn-secondary { background: #f0f0f0; color: #333; width: 100%; margin-bottom: 8px; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
         .btn-green {
             background: linear-gradient(135deg, #34a853 0%, #1f9e3e 100%);
-            color: white; width: 100%; padding: 16px;
-            font-size: 16px; font-weight: 700; margin-top: 16px;
+            color: white;
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 16px;
         }
+
         .btn-green:disabled { background: #ccc; }
+
         .text-display {
-            background: #f9f9f9; border: 2px solid #e0e0e0;
-            border-radius: 12px; padding: 14px; min-height: 80px;
-            font-size: 14px; line-height: 1.6; color: #333; word-break: break-all;
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 14px;
+            min-height: 80px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            word-break: break-all;
         }
+
         .text-display.empty { color: #999; font-style: italic; }
+
         select, input[type="text"] {
-            width: 100%; padding: 12px; border: 2px solid #e0e0e0;
-            border-radius: 12px; font-size: 15px; font-family: inherit;
-            background: white; margin-bottom: 8px; -webkit-appearance: none;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            background: white;
+            margin-bottom: 8px;
+            -webkit-appearance: none;
         }
-        select:focus, input:focus { outline: none; border-color: #667eea; }
-        .events-list { background: #f9f9f9; border-radius: 12px; padding: 12px; }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .events-list {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
         .event-item {
-            background: white; border-left: 4px solid #667eea;
-            padding: 10px; margin-bottom: 8px; border-radius: 8px;
-            font-size: 13px; line-height: 1.6;
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
         }
+
         .event-item:last-child { margin-bottom: 0; }
         .event-date { font-weight: 700; color: #333; }
         .event-time { color: #666; font-size: 12px; }
         .event-title { color: #667eea; font-weight: 600; }
+
         .no-events { color: #999; font-style: italic; text-align: center; padding: 16px; }
+
         .debug-box {
-            background: #f5f5f5; border: 1px solid #ddd; border-radius: 8px;
-            padding: 8px; font-size: 11px; color: #666; margin-top: 8px;
-            display: none; white-space: pre;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 11px;
+            color: #666;
+            margin-top: 8px;
+            display: none;
         }
+
         .status-message {
-            text-align: center; margin-top: 10px; font-size: 13px;
-            padding: 10px; border-radius: 8px; display: none; line-height: 1.5;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            line-height: 1.5;
         }
+
         .status-message.success { background: #d4edda; color: #155724; display: block; }
         .status-message.error { background: #f8d7da; color: #721c24; display: block; }
         .status-message.loading { background: #cfe2ff; color: #084298; display: block; }
+
         .divider { height: 1px; background: #e0e0e0; margin: 16px 0; }
-        .auth-status { text-align: center; font-size: 13px; color: #34a853; font-weight: 600; padding: 8px; display: none; }
+
+        .auth-status {
+            text-align: center;
+            font-size: 13px;
+            color: #34a853;
+            font-weight: 600;
+            padding: 8px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -127,24 +219,37 @@
         <h1>📅 予定登録</h1>
         <p>複数の予定を一度にGoogleカレンダーへ</p>
     </div>
+
     <div class="content">
+
+        <!-- Google認証 -->
         <div class="section">
             <div class="section-title">🔐 Google認証</div>
             <button class="btn-primary" id="googleLoginBtn">🔓 Googleでサインイン</button>
             <div class="auth-status" id="authStatus">✅ ログイン済み</div>
         </div>
+
         <div class="divider"></div>
+
+        <!-- 音声入力 -->
         <div class="section">
             <div class="section-title">📢 音声入力</div>
-            <div class="info-box">「1月1日9時から3時、み仕事、1月2日10時から2時、卓球」のように話してください</div>
+            <div class="info-box">
+                「1月1日9時から3時、み仕事、1月2日10時から2時、卓球」のように複数まとめて話してください
+            </div>
             <button class="btn-primary" id="recordBtn">🎤 タップして話す</button>
             <button class="btn-secondary" id="clearBtn">🗑️ クリア</button>
         </div>
+
+        <!-- 認識テキスト -->
         <div class="section">
             <div class="section-title">📝 認識テキスト</div>
             <div class="text-display empty" id="textDisplay">タップして音声入力してください</div>
         </div>
+
         <div class="divider"></div>
+
+        <!-- タイトル選択 -->
         <div class="section">
             <div class="section-title">🏷️ デフォルトタイトル</div>
             <select id="titleSelect">
@@ -161,7 +266,10 @@
             </select>
             <input type="text" id="customInput" placeholder="タイトルを入力" style="display:none;">
         </div>
+
         <div class="divider"></div>
+
+        <!-- 抽出された予定 -->
         <div class="section">
             <div class="section-title">📋 抽出された予定</div>
             <div class="events-list" id="eventsList">
@@ -169,14 +277,23 @@
             </div>
             <div class="debug-box" id="debugBox"></div>
         </div>
+
+        <!-- 登録ボタン -->
         <button class="btn-green" id="registerBtn" disabled>✓ Googleカレンダーに登録</button>
+
+        <!-- ステータス -->
         <div class="status-message" id="statusMessage"></div>
+
     </div>
 </div>
+
 <script>
+// ===== 設定 =====
 const GOOGLE_CLIENT_ID = '8880616614-a28l4bdoaias61s7hi36pgrvrhbfc117.apps.googleusercontent.com';
 const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/calendar';
 const GOOGLE_CALENDAR_ID = 'primary';
+
+// ===== 要素 =====
 const recordBtn = document.getElementById('recordBtn');
 const clearBtn = document.getElementById('clearBtn');
 const textDisplay = document.getElementById('textDisplay');
@@ -188,46 +305,68 @@ const statusMessage = document.getElementById('statusMessage');
 const googleLoginBtn = document.getElementById('googleLoginBtn');
 const authStatus = document.getElementById('authStatus');
 const debugBox = document.getElementById('debugBox');
+
 let recognitionText = '';
 let extractedEvents = [];
 let isRecording = false;
 let recognition = null;
 let googleAccessToken = null;
 
+// ===== 漢字数字→アラビア数字変換 =====
 function kanjiToNum(str) {
+    // 漢数字を数字に変換（三十、四十なども対応）
     return str
-        .replace(/二十([一二三四五六七八九])/g, (_, n) => String(20 + '一二三四五六七八九'.indexOf(n) + 1))
-        .replace(/十([一二三四五六七八九])/g, (_, n) => String(10 + '一二三四五六七八九'.indexOf(n) + 1))
-        .replace(/二十/g, '20').replace(/十/g, '10')
+        // 複合数字：[一二三四五六七八九]十[一二三四五六七八九]（例：三十五→35）
+        .replace(/([一二三四五六七八九]?)十([一二三四五六七八九]?)/g, (_, tens, ones) => {
+            const t = tens ? '一二三四五六七八九'.indexOf(tens) + 2 : 1;
+            const o = ones ? '一二三四五六七八九'.indexOf(ones) + 1 : 0;
+            return String(t * 10 + o);
+        })
         .replace(/一/g, '1').replace(/二/g, '2').replace(/三/g, '3')
         .replace(/四/g, '4').replace(/五/g, '5').replace(/六/g, '6')
-        .replace(/七/g, '7').replace(/八/g, '8').replace(/九/g, '9').replace(/〇/g, '0');
+        .replace(/七/g, '7').replace(/八/g, '8').replace(/九/g, '9')
+        .replace(/〇/g, '0');
 }
 
+// ===== ページ読み込み時：トークン確認 =====
 window.addEventListener('load', () => {
     const hash = window.location.hash;
+
+    // Googleからエラーが返ってきた場合
     if (hash && hash.includes('error')) {
         const params = new URLSearchParams(hash.substring(1));
         const error = params.get('error');
         history.replaceState(null, null, window.location.pathname);
-        if (error === 'access_denied') {
-            showStatus('❌ アクセス拒否。Google Cloud ConsoleのテストユーザーにあなたのGmailを追加してください。', 'error');
+
+        if (error === 'redirect_uri_mismatch' || error === 'invalid_request') {
+            showStatus('❌ Google設定エラー：Google Cloud ConsoleにこのアプリのURLを登録する必要があります。下の案内を確認してください。', 'error');
+        } else if (error === 'access_denied') {
+            showStatus('❌ アクセスが拒否されました。Google Cloud Consoleのテストユーザーにあなたのメールを追加してください。', 'error');
         } else {
             showStatus('❌ Google認証エラー: ' + error, 'error');
         }
         return;
     }
+
+    // URLハッシュからトークンを取得（Google認証リダイレクト後）
     if (hash && hash.includes('access_token')) {
         const params = new URLSearchParams(hash.substring(1));
         googleAccessToken = params.get('access_token');
         const expiresIn = parseInt(params.get('expires_in')) || 3600;
+        const expiry = new Date(Date.now() + expiresIn * 1000);
+
         localStorage.setItem('google_access_token', googleAccessToken);
-        localStorage.setItem('google_token_expiry', new Date(Date.now() + expiresIn * 1000).toISOString());
+        localStorage.setItem('google_token_expiry', expiry.toISOString());
+
+        // ハッシュをクリア
         history.replaceState(null, null, window.location.pathname);
+
         updateAuthUI();
         showStatus('✅ Googleアカウントでログインしました！', 'success');
         return;
     }
+
+    // 保存済みトークンを確認
     const savedToken = localStorage.getItem('google_access_token');
     const savedExpiry = localStorage.getItem('google_token_expiry');
     if (savedToken && savedExpiry && new Date(savedExpiry) > new Date()) {
@@ -236,8 +375,10 @@ window.addEventListener('load', () => {
     }
 });
 
+// ===== Google認証（リダイレクト方式：iPhoneでも動く）=====
 googleLoginBtn.addEventListener('click', () => {
     if (googleAccessToken) {
+        // ログアウト
         googleAccessToken = null;
         localStorage.removeItem('google_access_token');
         localStorage.removeItem('google_token_expiry');
@@ -245,6 +386,9 @@ googleLoginBtn.addEventListener('click', () => {
         showStatus('ログアウトしました', 'success');
         return;
     }
+
+    // リダイレクトでGoogleログイン
+    // redirect_uri は必ずGoogle Cloud Consoleに登録したURLと完全一致させる
     const redirectUri = 'https://imaimaimai24-hash.github.io/imaimaimai24.github.io/calendar-app.html';
     const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     authUrl.searchParams.append('client_id', GOOGLE_CLIENT_ID);
@@ -252,6 +396,7 @@ googleLoginBtn.addEventListener('click', () => {
     authUrl.searchParams.append('response_type', 'token');
     authUrl.searchParams.append('scope', GOOGLE_SCOPES);
     authUrl.searchParams.append('prompt', 'consent');
+
     window.location.href = authUrl.toString();
 });
 
@@ -267,13 +412,16 @@ function updateAuthUI() {
     }
 }
 
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+// ===== 音声認識（日本語固定）=====
+const SpeechRecognition || window.webkitSpeechRecognition;
+
 if (SpeechRecognition) {
     recognition = new SpeechRecognition();
     recognition.lang = 'ja-JP';
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
+
     recognition.onstart = () => {
         isRecording = true;
         recordBtn.classList.add('recording');
@@ -281,6 +429,7 @@ if (SpeechRecognition) {
         textDisplay.textContent = '聞き取り中...';
         textDisplay.classList.remove('empty');
     };
+
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         recognitionText += transcript;
@@ -288,12 +437,18 @@ if (SpeechRecognition) {
         textDisplay.classList.remove('empty');
         parseEvents();
     };
+
     recognition.onerror = (event) => {
         isRecording = false;
         recordBtn.classList.remove('recording');
         recordBtn.textContent = '🎤 タップして話す';
-        if (event.error !== 'no-speech') showStatus('エラー: ' + event.error, 'error');
+        if (event.error === 'no-speech') {
+            showStatus('音声が認識されませんでした。もう一度試してください。', 'error');
+        } else {
+            showStatus('エラー: ' + event.error, 'error');
+        }
     };
+
     recognition.onend = () => {
         isRecording = false;
         recordBtn.classList.remove('recording');
@@ -302,8 +457,15 @@ if (SpeechRecognition) {
 }
 
 recordBtn.addEventListener('click', () => {
-    if (!recognition) { showStatus('このブラウザは音声認識に対応していません', 'error'); return; }
-    if (isRecording) recognition.stop(); else recognition.start();
+    if (!recognition) {
+        showStatus('お使いのブラウザは音声認識に対応していません', 'error');
+        return;
+    }
+    if (isRecording) {
+        recognition.stop();
+    } else {
+        recognition.start();
+    }
 });
 
 clearBtn.addEventListener('click', () => {
@@ -322,66 +484,144 @@ titleSelect.addEventListener('change', () => {
     if (recognitionText) parseEvents();
 });
 
+// ===== 日程解析 =====
 function parseEvents() {
     const rawText = recognitionText.trim();
     if (!rawText) return;
+
+    // 漢数字をアラビア数字に変換
     const text = kanjiToNum(rawText);
+
     extractedEvents = [];
     const defaultTitle = titleSelect.value === 'custom' ? customInput.value : titleSelect.value;
-    const parts = text.split(/(?=\d{1,2}月\d{1,2}日)/).filter(p => p.trim() && /\d{1,2}月\d{1,2}日/.test(p));
-    const segments = parts.map(p => p.trim());
-    let debugText = '分割ブロック: ' + segments.length + '件\n';
-    segments.forEach((s, i) => { debugText += '[' + (i+1) + '] ' + s.substring(0, 20) + '\n'; });
+
+    // 「X月X日」を区切りとしてセグメントに分割
+    const segments = [];
+    // より柔軟な分割：「の」「は」「に」なども考慮
+    const splitRegex = /(?=\d{1,2}月\d{1,2}日)/g;
+    const parts = text.split(splitRegex).filter(p => p.trim() && /\d{1,2}月\d{1,2}日/.test(p));
+
+    for (const p of parts) {
+        segments.push(p.trim());
+    }
+
+    // デバッグ情報を表示
+    let debugText = `📊 分割されたブロック: ${segments.length}件\n`;
+    segments.forEach((s, i) => {
+        debugText += `[${i+1}] ${s.substring(0, 30)}...\n`;
+    });
     debugBox.textContent = debugText;
     debugBox.style.display = 'block';
+
     for (const seg of segments) {
         const event = parseSegment(seg, defaultTitle);
         if (event) extractedEvents.push(event);
     }
+
     displayEvents();
     registerBtn.disabled = extractedEvents.length === 0 || !googleAccessToken;
+
     if (segments.length > 0 && extractedEvents.length < segments.length) {
-        showStatus('⚠️ ' + segments.length + '件中' + extractedEvents.length + '件を解析しました', 'error');
+        const missed = segments.length - extractedEvents.length;
+        showStatus(`⚠️ ${segments.length}件中 ${extractedEvents.length}件を解析しました（${missed}件は時間が読み取れませんでした）`, 'error');
     }
 }
-
-function pad(n) { return String(n).padStart(2, '0'); }
 
 function parseSegment(seg, defaultTitle) {
     const dateMatch = seg.match(/(\d{1,2})月(\d{1,2})日/);
     if (!dateMatch) return null;
-    const date = dateMatch[1] + '月' + dateMatch[2] + '日';
+
+    const date = `${dateMatch[1]}月${dateMatch[2]}日`;
+    // 日付の後の文字列を取得。「の」「は」「に」「で」「から」などの先頭助詞を除去
     const afterDate = seg.substring(dateMatch.index + dateMatch[0].length)
-        .replace(/^[のはにで、,，\s　]+/, '').trim();
+        .replace(/^[のはにでもかから、,，\s　]+/, '')
+        .trim();
+
+    // 時間解析パターン1：「9時から3時」「9時〜15時」「午前9時から午後3時」「9時30分から14時30分」「9時半から3時半」
     const timeMatch = afterDate.match(
-        /(?:午前|午後)?(\d{1,2})[時：:]((\d{1,2})分?)?\s*(?:半)?\s*(?:から|〜|～|ー)\s*(?:午前|午後)?(\d{1,2})[時：:]?((\d{1,2})分?)?\s*(?:半)?/
+        /(?:午前|午後)?(\d{1,2})[時：:]((\d{1,2})分?)?\s*(?:半)?\s*(?:から|〜|～|ー|まで)\s*(?:午前|午後)?(\d{1,2})[時：:]?((\d{1,2})分?)?\s*(?:半)?/
     );
+
     if (!timeMatch) {
-        const m2 = afterDate.match(/(?:午前|午後)?(\d{1,2})\s*(?:から|〜|～|ー)\s*(?:午前|午後)?(\d{1,2})[時：:]?((\d{1,2})分?)?/);
-        if (!m2) return null;
-        let sH = parseInt(m2[1]), eH = parseInt(m2[2]), eM = m2[3] ? parseInt(m2[3]) : 0;
-        if (eH < sH && eH <= 12) eH += 12;
-        const afterTime2 = afterDate.substring(m2.index + m2[0].length).trim();
-        return { date, startTime: pad(sH)+':00', endTime: pad(eH)+':'+pad(eM), title: extractTitle(afterTime2, defaultTitle), location: '' };
+        // 時間パターン2: 「9から3時」のような形も試みる
+        const timeMatch2 = afterDate.match(
+            /(?:午前|午後)?(\d{1,2})\s*(?:から|〜|～|ー)\s*(?:午前|午後)?(\d{1,2})[時：:]?((\d{1,2})分?)?/
+        );
+        if (!timeMatch2) return null;
+
+        let startH = parseInt(timeMatch2[1]);
+        let endH = parseInt(timeMatch2[2]);
+        let endM = timeMatch2[3] ? parseInt(timeMatch2[3]) : 0;
+
+        if (endH < startH && endH <= 12) endH += 12;
+
+        const startTime = `${String(startH).padStart(2,'0')}:00`;
+        const endTime = `${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')}`;
+        const beforeTime2 = afterDate.substring(0, timeMatch2.index).trim();
+        const afterTime2 = afterDate.substring(timeMatch2.index + timeMatch2[0].length).trim();
+        const title = extractTitle(afterTime2, defaultTitle, beforeTime2);
+
+        return { date, startTime, endTime, title, location: '' };
     }
-    let sH = parseInt(timeMatch[1]), sM = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
-    const beforeFrom = afterDate.substring(0, afterDate.search(/から|〜|～|ー/));
-    if (/半/.test(beforeFrom)) sM = 30;
-    let eH = parseInt(timeMatch[4]), eM = timeMatch[5] ? parseInt(timeMatch[5]) : 0;
+
+    let startH = parseInt(timeMatch[1]);
+    let startM = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+
+    // 「半」の処理（開始時間）
+    const beforeFrom = afterDate.substring(0, timeMatch.index + timeMatch[1].length + 1);
+    if (/半/.test(beforeFrom.split(/から|〜|～/)[0])) startM = 30;
+
+    let endH = parseInt(timeMatch[4]);
+    let endM = timeMatch[5] ? parseInt(timeMatch[5]) : 0;
+
+    // 「半」の処理（終了時間）
     const afterFrom = afterDate.substring(afterDate.search(/から|〜|～|ー/));
-    if (/半/.test(afterFrom)) eM = 30;
-    if (eH !== 0 && eH < sH && eH <= 12) eH += 12;
-    const afterTime = afterDate.substring(timeMatch.index + timeMatch[0].length).trim();
-    return { date, startTime: pad(sH)+':'+pad(sM), endTime: pad(eH)+':'+pad(eM), title: extractTitle(afterTime, defaultTitle), location: '' };
+    if (/半/.test(afterFrom)) endM = 30;
+
+    // 午後判定（終了時刻が開始より小さく12以下 → 午後に変換）
+    if (endH < startH && endH <= 12) endH += 12;
+
+    const startTime = `${String(startH).padStart(2,'0')}:${String(startM).padStart(2,'0')}`;
+    const endTime = `${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')}`;
+
+    // タイトル抽出：時間の前後のテキストを両方チェック
+    const beforeTime = afterDate.substring(0, timeMatch.index).trim();
+    const afterTimeStr = afterDate.substring(timeMatch.index + timeMatch[0].length).trim();
+    const title = extractTitle(afterTimeStr, defaultTitle, beforeTime);
+
+    return { date, startTime, endTime, title, location: '' };
 }
 
-function extractTitle(afterTime, defaultTitle) {
+// afterTime: 時間表現の後のテキスト、beforeTime: 時間表現の前のテキスト（「熱海仕事9時から17時」の「熱海仕事」部分）
+function extractTitle(afterTime, defaultTitle, beforeTime = '') {
     let title = defaultTitle || '予定';
-    if (!afterTime) return title;
-    const cleaned = afterTime.replace(/^[、,，\s　。．]+/, '').trim();
-    if (!cleaned) return title;
-    const parts = cleaned.split(/[、,，\s　。．]+/).filter(p => p.trim());
-    if (parts.length > 0 && parts[0].trim()) title = parts[0].trim();
+
+    // ① 時間の後のテキストを優先して探す（「9時から17時仕事」の「仕事」）
+    if (afterTime) {
+        // 「まで」「で」「に」「は」「の」「間」「、」など不要な先頭を除去
+        const cleaned = afterTime
+            .replace(/^[まで間でにはのもかから、,，\s　。．]+/, '')
+            .trim();
+        if (cleaned) {
+            const parts = cleaned.split(/[、,，\s　。．]+/).filter(p => p.trim());
+            if (parts.length > 0 && parts[0].trim()) {
+                title = parts[0].trim();
+                return title;
+            }
+        }
+    }
+
+    // ② 時間の後に何もなければ前のテキストを使う（「熱海仕事9時から17時」の「熱海仕事」）
+    if (beforeTime) {
+        const bcleaned = beforeTime
+            .replace(/^[のはにでもかから、,，\s　。．]+/, '')
+            .replace(/[のはにでもかから、,，\s　。．]+$/, '')
+            .trim();
+        if (bcleaned && !/^\d+$/.test(bcleaned)) {
+            title = bcleaned;
+        }
+    }
+
     return title;
 }
 
@@ -390,35 +630,57 @@ function displayEvents() {
         eventsList.innerHTML = '<div class="no-events">予定が検出されていません</div>';
         return;
     }
-    eventsList.innerHTML = extractedEvents.map(e =>
-        '<div class="event-item">' +
-        '<div class="event-date">📅 ' + e.date + '</div>' +
-        '<div class="event-time">⏰ ' + e.startTime + ' → ' + e.endTime + '</div>' +
-        '<div class="event-title">🏷️ ' + e.title + '</div>' +
-        (e.location ? '<div style="color:#999;font-size:12px">📍 ' + e.location + '</div>' : '') +
-        '</div>'
-    ).join('');
+    eventsList.innerHTML = extractedEvents.map(e => `
+        <div class="event-item">
+            <div class="event-date">📅 ${e.date}</div>
+            <div class="event-time">⏰ ${e.startTime} → ${e.endTime}</div>
+            <div class="event-title">🏷️ ${e.title}</div>
+            ${e.location ? `<div style="color:#999;font-size:12px">📍 ${e.location}</div>` : ''}
+        </div>
+    `).join('');
 }
 
+// ===== Google Calendar 登録 =====
 registerBtn.addEventListener('click', async () => {
-    if (!googleAccessToken) { showStatus('先にGoogleでサインインしてください', 'error'); return; }
+    if (!googleAccessToken) {
+        showStatus('先にGoogleでサインインしてください', 'error');
+        return;
+    }
     if (extractedEvents.length === 0) return;
+
     registerBtn.disabled = true;
     showStatus('登録中...', 'loading');
-    try {
-        for (const event of extractedEvents) await createEvent(event);
-        showStatus('✅ ' + extractedEvents.length + '件の予定を登録しました！', 'success');
-        clearBtn.click();
-    } catch (e) {
-        if (e.message && e.message.includes('401')) {
-            googleAccessToken = null;
-            localStorage.removeItem('google_access_token');
-            localStorage.removeItem('google_token_expiry');
-            updateAuthUI();
-            showStatus('❌ ログイン期限切れ。再度サインインしてください。', 'error');
-        } else {
-            showStatus('❌ エラー: ' + e.message, 'error');
+
+    let successCount = 0;
+    const errors = [];
+
+    for (const event of extractedEvents) {
+        try {
+            await createEvent(event);
+            successCount++;
+        } catch (e) {
+            if (e.message && e.message.includes('401')) {
+                // トークン期限切れ → 以降の登録は無意味なので中断
+                googleAccessToken = null;
+                localStorage.removeItem('google_access_token');
+                localStorage.removeItem('google_token_expiry');
+                updateAuthUI();
+                showStatus('❌ ログインの有効期限が切れました。再度サインインしてください。', 'error');
+                registerBtn.disabled = false;
+                return;
+            }
+            errors.push(`${event.date} ${event.title}: ${e.message}`);
         }
+    }
+
+    if (errors.length === 0) {
+        showStatus(`✅ ${successCount}件の予定を登録しました！`, 'success');
+        clearBtn.click();
+    } else if (successCount > 0) {
+        showStatus(`⚠️ ${successCount}件登録成功、${errors.length}件失敗：${errors.join(' / ')}`, 'error');
+        registerBtn.disabled = false;
+    } else {
+        showStatus(`❌ 登録失敗：${errors.join(' / ')}`, 'error');
         registerBtn.disabled = false;
     }
 });
@@ -428,29 +690,49 @@ async function createEvent(eventData) {
     const year = new Date().getFullYear();
     const [sh, sm] = eventData.startTime.split(':').map(Number);
     const [eh, em] = eventData.endTime.split(':').map(Number);
+
     let start = new Date(year, parseInt(m)-1, parseInt(d), sh, sm);
     let end = new Date(year, parseInt(m)-1, parseInt(d), eh, em);
-    if (start < new Date()) { start.setFullYear(year+1); end.setFullYear(year+1); }
+
+    if (start < new Date()) {
+        start.setFullYear(year + 1);
+        end.setFullYear(year + 1);
+    }
+
     const body = {
         summary: eventData.title,
         location: eventData.location || '',
         start: { dateTime: start.toISOString(), timeZone: 'Asia/Tokyo' },
         end: { dateTime: end.toISOString(), timeZone: 'Asia/Tokyo' }
     };
-    const res = await fetch('https://www.googleapis.com/calendar/v3/calendars/' + GOOGLE_CALENDAR_ID + '/events', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + googleAccessToken, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-    if (!res.ok) { const err = await res.json(); throw new Error(err.error?.message || '登録失敗 (' + res.status + ')'); }
+
+    const res = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${GOOGLE_CALENDAR_ID}/events`,
+        {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${googleAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }
+    );
+
+    if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error?.message || `登録失敗 (${res.status})`);
+    }
     return res.json();
 }
 
 function showStatus(msg, type) {
-    statusMessage.className = 'status-message ' + type;
+    statusMessage.className = `status-message ${type}`;
     statusMessage.textContent = msg;
-    if (type === 'success') setTimeout(() => statusMessage.className = 'status-message', 5000);
+    if (type === 'success') {
+        setTimeout(() => statusMessage.className = 'status-message', 5000);
+    }
 }
 </script>
 </body>
 </html>
+
