@@ -210,6 +210,26 @@
             padding: 8px;
             display: none;
         }
+
+        .registered-list {
+            background: #f0fff8;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .registered-item {
+            background: white;
+            border-left: 4px solid #88ddaa;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            box-shadow: 0 2px 6px rgba(100,200,150,0.12);
+        }
+
+        .registered-item:last-child { margin-bottom: 0; }
+        .registered-section { display: none; }
     </style>
 </head>
 <body>
@@ -277,6 +297,14 @@
         <!-- ステータス -->
         <div class="status-message" id="statusMessage"></div>
 
+        <div class="divider"></div>
+
+        <!-- 登録済みの予定 -->
+        <div class="section registered-section" id="registeredSection">
+            <div class="section-title">✅ 登録済みの予定</div>
+            <div class="registered-list" id="registeredList"></div>
+        </div>
+
     </div>
 </div>
 
@@ -297,9 +325,12 @@ const statusMessage = document.getElementById('statusMessage');
 const googleLoginBtn = document.getElementById('googleLoginBtn');
 const authStatus = document.getElementById('authStatus');
 const debugBox = document.getElementById('debugBox');
+const registeredSection = document.getElementById('registeredSection');
+const registeredList = document.getElementById('registeredList');
 
 let extractedEvents = [];
 let googleAccessToken = null;
+let registeredEvents = [];
 
 // ===== 漢字数字→アラビア数字変換 =====
 function kanjiToNum(str) {
@@ -574,6 +605,7 @@ registerBtn.addEventListener('click', async () => {
 
     if (errors.length === 0) {
         showStatus(`✅ ${successCount}件の予定を登録しました！`, 'success');
+        addToRegistered(extractedEvents);
         clearBtn.click();
     } else if (successCount > 0) {
         showStatus(`⚠️ ${successCount}件成功、${errors.length}件失敗：${errors.join(' / ')}`, 'error');
@@ -593,10 +625,15 @@ async function createEvent(eventData) {
     let start = new Date(year, parseInt(m)-1, parseInt(d), sh, sm);
     let end = new Date(year, parseInt(m)-1, parseInt(d), eh, em);
 
-    if (start < new Date()) {
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+    const startDay = new Date(year, parseInt(m)-1, parseInt(d));
+    const movedToNextYear = startDay < todayMidnight;
+    if (movedToNextYear) {
         start.setFullYear(year + 1);
         end.setFullYear(year + 1);
     }
+    console.log(`[登録] ${eventData.date} startDay=${startDay.toDateString()} today=${todayMidnight.toDateString()} movedToNextYear=${movedToNextYear} → ${start.toISOString()}`);
 
     const body = {
         summary: eventData.title,
@@ -621,6 +658,18 @@ async function createEvent(eventData) {
         throw new Error(err.error?.message || `登録失敗 (${res.status})`);
     }
     return res.json();
+}
+
+function addToRegistered(events) {
+    registeredEvents = registeredEvents.concat(events);
+    registeredSection.style.display = 'block';
+    registeredList.innerHTML = registeredEvents.map(e => `
+        <div class="registered-item">
+            <div class="event-date">🗓 ${e.date}</div>
+            <div class="event-time">🕐 ${e.startTime} → ${e.endTime}</div>
+            <div class="event-title">🌸 ${e.title}</div>
+        </div>
+    `).join('');
 }
 
 function showStatus(msg, type) {
