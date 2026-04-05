@@ -220,16 +220,21 @@
         .registered-item {
             background: white;
             border-left: 4px solid #88ddaa;
-            padding: 10px;
-            margin-bottom: 8px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
             border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 14px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
             box-shadow: 0 2px 6px rgba(100,200,150,0.12);
         }
 
         .registered-item:last-child { margin-bottom: 0; }
-        .registered-section { display: none; }
+        .registered-item .event-date { font-weight: 700; color: #446655; }
+        .registered-item .event-time { color: #55aaaa; font-size: 13px; }
+        .registered-item .event-title { color: #337755; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -291,19 +296,21 @@
             <div class="debug-box" id="debugBox"></div>
         </div>
 
+        <div class="divider"></div>
+
+        <!-- 前回登録した予定 -->
+        <div class="section" id="registeredSection" style="display:none;">
+            <div class="section-title">📌 前回登録した予定</div>
+            <div class="registered-list" id="registeredList"></div>
+        </div>
+
+        <div class="divider" id="registeredDivider" style="display:none;"></div>
+
         <!-- 登録ボタン -->
         <button class="btn-green" id="registerBtn" disabled>✓ Googleカレンダーに登録</button>
 
         <!-- ステータス -->
         <div class="status-message" id="statusMessage"></div>
-
-        <div class="divider"></div>
-
-        <!-- 登録済みの予定 -->
-        <div class="section registered-section" id="registeredSection">
-            <div class="section-title">✅ 登録済みの予定</div>
-            <div class="registered-list" id="registeredList"></div>
-        </div>
 
     </div>
 </div>
@@ -326,11 +333,11 @@ const googleLoginBtn = document.getElementById('googleLoginBtn');
 const authStatus = document.getElementById('authStatus');
 const debugBox = document.getElementById('debugBox');
 const registeredSection = document.getElementById('registeredSection');
+const registeredDivider = document.getElementById('registeredDivider');
 const registeredList = document.getElementById('registeredList');
 
 let extractedEvents = [];
 let googleAccessToken = null;
-let registeredEvents = [];
 
 // ===== 漢字数字→アラビア数字変換 =====
 function kanjiToNum(str) {
@@ -381,6 +388,12 @@ window.addEventListener('load', () => {
         googleAccessToken = savedToken;
         updateAuthUI();
     }
+
+    // 前回登録した予定を復元
+    try {
+        const last = localStorage.getItem('lastRegistered');
+        if (last) showRegistered(JSON.parse(last));
+    } catch(e) {}
 });
 
 // ===== Google認証 =====
@@ -661,13 +674,19 @@ async function createEvent(eventData) {
 }
 
 function addToRegistered(events) {
-    registeredEvents = registeredEvents.concat(events);
+    localStorage.setItem('lastRegistered', JSON.stringify(events));
+    showRegistered(events);
+}
+
+function showRegistered(events) {
+    if (!events || events.length === 0) return;
     registeredSection.style.display = 'block';
-    registeredList.innerHTML = registeredEvents.map(e => `
+    registeredDivider.style.display = 'block';
+    registeredList.innerHTML = events.map(e => `
         <div class="registered-item">
-            <div class="event-date">🗓 ${e.date}</div>
-            <div class="event-time">🕐 ${e.startTime} → ${e.endTime}</div>
-            <div class="event-title">🌸 ${e.title}</div>
+            <span class="event-date">${e.date}</span>
+            <span class="event-time">${e.startTime}〜${e.endTime}</span>
+            <span class="event-title">${e.title}</span>
         </div>
     `).join('');
 }
