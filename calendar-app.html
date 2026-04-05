@@ -84,17 +84,6 @@
 
         .btn-primary:active { opacity: 0.8; transform: scale(0.98); }
 
-        .btn-primary.recording {
-            background: linear-gradient(135deg, #e0ffff 0%, #ffffe0 100%);
-            color: #337788;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
         .btn-secondary {
             background: #ffffe0;
             color: #887733;
@@ -118,19 +107,30 @@
 
         .btn-green:disabled { background: #ddd; box-shadow: none; color: #aaa; }
 
-        .text-display {
-            background: #f8fff8;
+        textarea {
+            width: 100%;
+            padding: 14px;
             border: 2px solid #e0ffff;
             border-radius: 12px;
-            padding: 14px;
-            min-height: 80px;
-            font-size: 14px;
+            font-size: 15px;
+            font-family: inherit;
+            background: #f8fff8;
+            margin-bottom: 8px;
+            resize: vertical;
+            min-height: 100px;
             line-height: 1.6;
             color: #333;
-            word-break: break-all;
         }
 
-        .text-display.empty { color: #bbaacc; font-style: italic; }
+        textarea:focus {
+            outline: none;
+            border-color: #ffe0ff;
+        }
+
+        textarea::placeholder {
+            color: #bbaacc;
+            font-style: italic;
+        }
 
         select, input[type="text"] {
             width: 100%;
@@ -230,27 +230,21 @@
 
         <div class="divider"></div>
 
-        <!-- 音声入力 -->
+        <!-- テキスト入力 -->
         <div class="section">
-            <div class="section-title">🎤 音声入力</div>
+            <div class="section-title">📝 予定テキスト入力</div>
             <div class="info-box">
-                「4月5日9時から17時仕事、4月6日10時から15時卓球」のように<br>日付・時間・タイトルの順で話してください
+                「4月5日9時から17時仕事、4月6日10時から15時卓球」のように<br>日付・時間・タイトルの順で入力してください<br>iPhoneのキーボードのマイクボタンで音声入力もできます🎤
             </div>
-            <button class="btn-primary" id="recordBtn">🎤 タップして話す</button>
+            <textarea id="textInput" placeholder="ここに予定を入力してください&#10;例：4月5日9時から17時仕事、4月6日10時から15時卓球"></textarea>
             <button class="btn-secondary" id="clearBtn">🗑️ クリア</button>
-        </div>
-
-        <!-- 認識テキスト -->
-        <div class="section">
-            <div class="section-title">📝 認識テキスト</div>
-            <div class="text-display empty" id="textDisplay">タップして音声入力してください</div>
         </div>
 
         <div class="divider"></div>
 
         <!-- タイトル選択 -->
         <div class="section">
-            <div class="section-title">🏷️ デフォルトタイトル（音声で言わない場合）</div>
+            <div class="section-title">🏷️ デフォルトタイトル（入力しない場合）</div>
             <select id="titleSelect">
                 <option value="">タイトルを選択（任意）</option>
                 <option value="み　仕事">み　仕事</option>
@@ -293,9 +287,8 @@ const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/calendar';
 const GOOGLE_CALENDAR_ID = 'primary';
 
 // ===== 要素 =====
-const recordBtn = document.getElementById('recordBtn');
+const textInput = document.getElementById('textInput');
 const clearBtn = document.getElementById('clearBtn');
-const textDisplay = document.getElementById('textDisplay');
 const titleSelect = document.getElementById('titleSelect');
 const customInput = document.getElementById('customInput');
 const eventsList = document.getElementById('eventsList');
@@ -305,10 +298,7 @@ const googleLoginBtn = document.getElementById('googleLoginBtn');
 const authStatus = document.getElementById('authStatus');
 const debugBox = document.getElementById('debugBox');
 
-let recognitionText = '';
 let extractedEvents = [];
-let isRecording = false;
-let recognition = null;
 let googleAccessToken = null;
 
 // ===== 漢字数字→アラビア数字変換 =====
@@ -394,66 +384,13 @@ function updateAuthUI() {
     }
 }
 
-// ===== 音声認識 =====
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = 'ja-JP';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-        isRecording = true;
-        recordBtn.classList.add('recording');
-        recordBtn.textContent = '⏹️ タップして停止';
-        textDisplay.textContent = '聞き取り中...';
-        textDisplay.classList.remove('empty');
-    };
-
-    recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        recognitionText += transcript;
-        textDisplay.textContent = recognitionText;
-        textDisplay.classList.remove('empty');
-        parseEvents();
-    };
-
-    recognition.onerror = (event) => {
-        isRecording = false;
-        recordBtn.classList.remove('recording');
-        recordBtn.textContent = '🎤 タップして話す';
-        if (event.error === 'no-speech') {
-            showStatus('音声が認識されませんでした。もう一度試してください。', 'error');
-        } else {
-            showStatus('エラー: ' + event.error, 'error');
-        }
-    };
-
-    recognition.onend = () => {
-        isRecording = false;
-        recordBtn.classList.remove('recording');
-        recordBtn.textContent = '🎤 タップして話す';
-    };
-}
-
-recordBtn.addEventListener('click', () => {
-    if (!recognition) {
-        showStatus('お使いのブラウザは音声認識に対応していません', 'error');
-        return;
-    }
-    if (isRecording) {
-        recognition.stop();
-    } else {
-        recognition.start();
-    }
+// ===== テキスト入力イベント =====
+textInput.addEventListener('input', () => {
+    parseEvents();
 });
 
 clearBtn.addEventListener('click', () => {
-    recognitionText = '';
-    textDisplay.textContent = 'タップして音声入力してください';
-    textDisplay.classList.add('empty');
+    textInput.value = '';
     extractedEvents = [];
     eventsList.innerHTML = '<div class="no-events">予定が検出されていません</div>';
     debugBox.style.display = 'none';
@@ -463,13 +400,19 @@ clearBtn.addEventListener('click', () => {
 
 titleSelect.addEventListener('change', () => {
     customInput.style.display = titleSelect.value === 'custom' ? 'block' : 'none';
-    if (recognitionText) parseEvents();
+    if (textInput.value.trim()) parseEvents();
 });
 
 // ===== 日程解析 =====
 function parseEvents() {
-    const rawText = recognitionText.trim();
-    if (!rawText) return;
+    const rawText = textInput.value.trim();
+    if (!rawText) {
+        extractedEvents = [];
+        eventsList.innerHTML = '<div class="no-events">予定が検出されていません</div>';
+        debugBox.style.display = 'none';
+        registerBtn.disabled = true;
+        return;
+    }
 
     const text = kanjiToNum(rawText);
     extractedEvents = [];
@@ -558,7 +501,6 @@ function parseSegment(seg, defaultTitle) {
 function extractTitle(afterTime, defaultTitle, beforeTime = '') {
     let title = defaultTitle || '予定';
 
-    // 時間の後のテキストを優先（「17時仕事」の「仕事」）
     if (afterTime) {
         const cleaned = afterTime
             .replace(/^[まで間でにはのもかから、,，\s　。．]+/, '')
@@ -571,7 +513,6 @@ function extractTitle(afterTime, defaultTitle, beforeTime = '') {
         }
     }
 
-    // 時間の前のテキストを使う（「熱海仕事9時から17時」の「熱海仕事」）
     if (beforeTime) {
         const bcleaned = beforeTime
             .replace(/^[のはにでもかから、,，\s　。．]+/, '')
