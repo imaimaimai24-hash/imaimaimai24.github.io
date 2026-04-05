@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" content="#ffe0ff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="予定登録">
@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ffe0ff 0%, #e0ffff 100%);
             min-height: 100vh;
             padding: 20px;
             padding-top: env(safe-area-inset-top, 40px);
@@ -23,59 +23,48 @@
             max-width: 500px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(180,140,200,0.22);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
+            background: linear-gradient(135deg, #ffe0ff 0%, #ffffe0 50%, #e0ffff 100%);
+            color: #886688;
+            padding: 22px 20px;
             text-align: center;
         }
 
-        .header h1 { font-size: 22px; margin-bottom: 4px; }
-        .header p { font-size: 12px; opacity: 0.9; }
+        .header h1 { font-size: 22px; margin-bottom: 4px; color: #aa55aa; }
+        .header p { font-size: 12px; opacity: 0.85; color: #997799; }
 
         .content { padding: 16px; }
 
         .section { margin-bottom: 20px; }
 
         .section-title {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            color: #667eea;
+            color: #bb77cc;
             margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .info-box {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
+            background: #ffffe0;
+            border-left: 4px solid #cccc66;
             padding: 10px;
             border-radius: 8px;
             font-size: 12px;
-            color: #1565c0;
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-
-        .warn-box {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #856404;
+            color: #887733;
             margin-bottom: 12px;
             line-height: 1.5;
         }
 
         button {
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 14px 20px;
             font-size: 15px;
             font-weight: 600;
@@ -85,16 +74,19 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #ffe0ff 0%, #e0ffff 100%);
+            color: #7755aa;
             width: 100%;
             margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(200,150,220,0.3);
+            border: 1px solid rgba(200,150,220,0.4);
         }
 
         .btn-primary:active { opacity: 0.8; transform: scale(0.98); }
 
         .btn-primary.recording {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #e0ffff 0%, #ffffe0 100%);
+            color: #337788;
             animation: pulse 1.5s infinite;
         }
 
@@ -104,27 +96,31 @@
         }
 
         .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
+            background: #ffffe0;
+            color: #887733;
             width: 100%;
             margin-bottom: 8px;
+            font-weight: 600;
+            border: 1px solid rgba(200,200,100,0.4);
         }
 
         .btn-green {
-            background: linear-gradient(135deg, #34a853 0%, #1f9e3e 100%);
-            color: white;
+            background: linear-gradient(135deg, #e0ffff 0%, #ffffe0 100%);
+            color: #337766;
             width: 100%;
             padding: 16px;
             font-size: 16px;
             font-weight: 700;
             margin-top: 16px;
+            box-shadow: 0 4px 12px rgba(150,220,200,0.3);
+            border: 1px solid rgba(150,220,200,0.4);
         }
 
-        .btn-green:disabled { background: #ccc; }
+        .btn-green:disabled { background: #ddd; box-shadow: none; color: #aaa; }
 
         .text-display {
-            background: #f9f9f9;
-            border: 2px solid #e0e0e0;
+            background: #f8fff8;
+            border: 2px solid #e0ffff;
             border-radius: 12px;
             padding: 14px;
             min-height: 80px;
@@ -134,47 +130,49 @@
             word-break: break-all;
         }
 
-        .text-display.empty { color: #999; font-style: italic; }
+        .text-display.empty { color: #bbaacc; font-style: italic; }
 
         select, input[type="text"] {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #e0ffff;
             border-radius: 12px;
             font-size: 15px;
             font-family: inherit;
             background: white;
             margin-bottom: 8px;
             -webkit-appearance: none;
+            color: #555;
         }
 
         select:focus, input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #ffe0ff;
         }
 
         .events-list {
-            background: #f9f9f9;
+            background: #f8ffff;
             border-radius: 12px;
             padding: 12px;
         }
 
         .event-item {
             background: white;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #ddaaff;
             padding: 10px;
             margin-bottom: 8px;
             border-radius: 8px;
             font-size: 13px;
             line-height: 1.6;
+            box-shadow: 0 2px 6px rgba(180,140,220,0.12);
         }
 
         .event-item:last-child { margin-bottom: 0; }
-        .event-date { font-weight: 700; color: #333; }
-        .event-time { color: #666; font-size: 12px; }
-        .event-title { color: #667eea; font-weight: 600; }
+        .event-date { font-weight: 700; color: #554466; }
+        .event-time { color: #55aaaa; font-size: 12px; font-weight: 600; }
+        .event-title { color: #bb66cc; font-weight: 700; }
 
-        .no-events { color: #999; font-style: italic; text-align: center; padding: 16px; }
+        .no-events { color: #bbaacc; font-style: italic; text-align: center; padding: 16px; }
 
         .debug-box {
             background: #f5f5f5;
@@ -182,9 +180,10 @@
             border-radius: 8px;
             padding: 8px;
             font-size: 11px;
-            color: #666;
+            color: #888;
             margin-top: 8px;
             display: none;
+            white-space: pre-wrap;
         }
 
         .status-message {
@@ -192,21 +191,21 @@
             margin-top: 10px;
             font-size: 13px;
             padding: 10px;
-            border-radius: 8px;
+            border-radius: 10px;
             display: none;
             line-height: 1.5;
         }
 
-        .status-message.success { background: #d4edda; color: #155724; display: block; }
-        .status-message.error { background: #f8d7da; color: #721c24; display: block; }
-        .status-message.loading { background: #cfe2ff; color: #084298; display: block; }
+        .status-message.success { background: #e0ffee; color: #226633; display: block; }
+        .status-message.error { background: #ffe0ff; color: #882244; display: block; }
+        .status-message.loading { background: #e0ffff; color: #224488; display: block; }
 
-        .divider { height: 1px; background: #e0e0e0; margin: 16px 0; }
+        .divider { height: 1px; background: linear-gradient(90deg, #ffe0ff, #e0ffff); margin: 16px 0; }
 
         .auth-status {
             text-align: center;
             font-size: 13px;
-            color: #34a853;
+            color: #55aaaa;
             font-weight: 600;
             padding: 8px;
             display: none;
@@ -216,7 +215,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>📅 予定登録</h1>
+        <h1>🌸 予定登録</h1>
         <p>複数の予定を一度にGoogleカレンダーへ</p>
     </div>
 
@@ -233,9 +232,9 @@
 
         <!-- 音声入力 -->
         <div class="section">
-            <div class="section-title">📢 音声入力</div>
+            <div class="section-title">🎤 音声入力</div>
             <div class="info-box">
-                「1月1日9時から3時、み仕事、1月2日10時から2時、卓球」のように複数まとめて話してください
+                「4月5日9時から17時仕事、4月6日10時から15時卓球」のように<br>日付・時間・タイトルの順で話してください
             </div>
             <button class="btn-primary" id="recordBtn">🎤 タップして話す</button>
             <button class="btn-secondary" id="clearBtn">🗑️ クリア</button>
@@ -251,7 +250,7 @@
 
         <!-- タイトル選択 -->
         <div class="section">
-            <div class="section-title">🏷️ デフォルトタイトル</div>
+            <div class="section-title">🏷️ デフォルトタイトル（音声で言わない場合）</div>
             <select id="titleSelect">
                 <option value="">タイトルを選択（任意）</option>
                 <option value="み　仕事">み　仕事</option>
@@ -314,9 +313,7 @@ let googleAccessToken = null;
 
 // ===== 漢字数字→アラビア数字変換 =====
 function kanjiToNum(str) {
-    // 漢数字を数字に変換（三十、四十なども対応）
     return str
-        // 複合数字：[一二三四五六七八九]十[一二三四五六七八九]（例：三十五→35）
         .replace(/([一二三四五六七八九]?)十([一二三四五六七八九]?)/g, (_, tens, ones) => {
             const t = tens ? '一二三四五六七八九'.indexOf(tens) + 2 : 1;
             const o = ones ? '一二三四五六七八九'.indexOf(ones) + 1 : 0;
@@ -332,15 +329,11 @@ function kanjiToNum(str) {
 window.addEventListener('load', () => {
     const hash = window.location.hash;
 
-    // Googleからエラーが返ってきた場合
     if (hash && hash.includes('error')) {
         const params = new URLSearchParams(hash.substring(1));
         const error = params.get('error');
         history.replaceState(null, null, window.location.pathname);
-
-        if (error === 'redirect_uri_mismatch' || error === 'invalid_request') {
-            showStatus('❌ Google設定エラー：Google Cloud ConsoleにこのアプリのURLを登録する必要があります。下の案内を確認してください。', 'error');
-        } else if (error === 'access_denied') {
+        if (error === 'access_denied') {
             showStatus('❌ アクセスが拒否されました。Google Cloud Consoleのテストユーザーにあなたのメールを追加してください。', 'error');
         } else {
             showStatus('❌ Google認証エラー: ' + error, 'error');
@@ -348,25 +341,19 @@ window.addEventListener('load', () => {
         return;
     }
 
-    // URLハッシュからトークンを取得（Google認証リダイレクト後）
     if (hash && hash.includes('access_token')) {
         const params = new URLSearchParams(hash.substring(1));
         googleAccessToken = params.get('access_token');
         const expiresIn = parseInt(params.get('expires_in')) || 3600;
         const expiry = new Date(Date.now() + expiresIn * 1000);
-
         localStorage.setItem('google_access_token', googleAccessToken);
         localStorage.setItem('google_token_expiry', expiry.toISOString());
-
-        // ハッシュをクリア
         history.replaceState(null, null, window.location.pathname);
-
         updateAuthUI();
         showStatus('✅ Googleアカウントでログインしました！', 'success');
         return;
     }
 
-    // 保存済みトークンを確認
     const savedToken = localStorage.getItem('google_access_token');
     const savedExpiry = localStorage.getItem('google_token_expiry');
     if (savedToken && savedExpiry && new Date(savedExpiry) > new Date()) {
@@ -375,10 +362,9 @@ window.addEventListener('load', () => {
     }
 });
 
-// ===== Google認証（リダイレクト方式：iPhoneでも動く）=====
+// ===== Google認証 =====
 googleLoginBtn.addEventListener('click', () => {
     if (googleAccessToken) {
-        // ログアウト
         googleAccessToken = null;
         localStorage.removeItem('google_access_token');
         localStorage.removeItem('google_token_expiry');
@@ -386,9 +372,6 @@ googleLoginBtn.addEventListener('click', () => {
         showStatus('ログアウトしました', 'success');
         return;
     }
-
-    // リダイレクトでGoogleログイン
-    // redirect_uri は必ずGoogle Cloud Consoleに登録したURLと完全一致させる
     const redirectUri = 'https://imaimaimai24-hash.github.io/imaimaimai24.github.io/calendar-app.html';
     const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     authUrl.searchParams.append('client_id', GOOGLE_CLIENT_ID);
@@ -396,14 +379,13 @@ googleLoginBtn.addEventListener('click', () => {
     authUrl.searchParams.append('response_type', 'token');
     authUrl.searchParams.append('scope', GOOGLE_SCOPES);
     authUrl.searchParams.append('prompt', 'consent');
-
     window.location.href = authUrl.toString();
 });
 
 function updateAuthUI() {
     if (googleAccessToken) {
         googleLoginBtn.textContent = '✅ ログイン済み（タップでログアウト）';
-        googleLoginBtn.style.background = 'linear-gradient(135deg, #34a853, #1f9e3e)';
+        googleLoginBtn.style.background = 'linear-gradient(135deg, #e0ffff, #ffffe0)';
         authStatus.style.display = 'block';
     } else {
         googleLoginBtn.textContent = '🔓 Googleでサインイン';
@@ -412,8 +394,8 @@ function updateAuthUI() {
     }
 }
 
-// ===== 音声認識（日本語固定）=====
-const SpeechRecognition || window.webkitSpeechRecognition;
+// ===== 音声認識 =====
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 if (SpeechRecognition) {
     recognition = new SpeechRecognition();
@@ -489,27 +471,15 @@ function parseEvents() {
     const rawText = recognitionText.trim();
     if (!rawText) return;
 
-    // 漢数字をアラビア数字に変換
     const text = kanjiToNum(rawText);
-
     extractedEvents = [];
     const defaultTitle = titleSelect.value === 'custom' ? customInput.value : titleSelect.value;
 
-    // 「X月X日」を区切りとしてセグメントに分割
-    const segments = [];
-    // より柔軟な分割：「の」「は」「に」なども考慮
-    const splitRegex = /(?=\d{1,2}月\d{1,2}日)/g;
-    const parts = text.split(splitRegex).filter(p => p.trim() && /\d{1,2}月\d{1,2}日/.test(p));
+    const parts = text.split(/(?=\d{1,2}月\d{1,2}日)/).filter(p => p.trim() && /\d{1,2}月\d{1,2}日/.test(p));
+    const segments = parts.map(p => p.trim());
 
-    for (const p of parts) {
-        segments.push(p.trim());
-    }
-
-    // デバッグ情報を表示
-    let debugText = `📊 分割されたブロック: ${segments.length}件\n`;
-    segments.forEach((s, i) => {
-        debugText += `[${i+1}] ${s.substring(0, 30)}...\n`;
-    });
+    let debugText = `📊 分割ブロック: ${segments.length}件\n`;
+    segments.forEach((s, i) => { debugText += `[${i+1}] ${s.substring(0, 35)}\n`; });
     debugBox.textContent = debugText;
     debugBox.style.display = 'block';
 
@@ -532,18 +502,17 @@ function parseSegment(seg, defaultTitle) {
     if (!dateMatch) return null;
 
     const date = `${dateMatch[1]}月${dateMatch[2]}日`;
-    // 日付の後の文字列を取得。「の」「は」「に」「で」「から」などの先頭助詞を除去
     const afterDate = seg.substring(dateMatch.index + dateMatch[0].length)
         .replace(/^[のはにでもかから、,，\s　]+/, '')
         .trim();
 
-    // 時間解析パターン1：「9時から3時」「9時〜15時」「午前9時から午後3時」「9時30分から14時30分」「9時半から3時半」
+    // パターン1: 「9時から17時」「9時〜17時」「9時30分から17時」
     const timeMatch = afterDate.match(
         /(?:午前|午後)?(\d{1,2})[時：:]((\d{1,2})分?)?\s*(?:半)?\s*(?:から|〜|～|ー|まで)\s*(?:午前|午後)?(\d{1,2})[時：:]?((\d{1,2})分?)?\s*(?:半)?/
     );
 
     if (!timeMatch) {
-        // 時間パターン2: 「9から3時」のような形も試みる
+        // パターン2: 「9から17時」
         const timeMatch2 = afterDate.match(
             /(?:午前|午後)?(\d{1,2})\s*(?:から|〜|～|ー)\s*(?:午前|午後)?(\d{1,2})[時：:]?((\d{1,2})分?)?/
         );
@@ -552,7 +521,6 @@ function parseSegment(seg, defaultTitle) {
         let startH = parseInt(timeMatch2[1]);
         let endH = parseInt(timeMatch2[2]);
         let endM = timeMatch2[3] ? parseInt(timeMatch2[3]) : 0;
-
         if (endH < startH && endH <= 12) endH += 12;
 
         const startTime = `${String(startH).padStart(2,'0')}:00`;
@@ -560,58 +528,50 @@ function parseSegment(seg, defaultTitle) {
         const beforeTime2 = afterDate.substring(0, timeMatch2.index).trim();
         const afterTime2 = afterDate.substring(timeMatch2.index + timeMatch2[0].length).trim();
         const title = extractTitle(afterTime2, defaultTitle, beforeTime2);
-
-        return { date, startTime, endTime, title, location: '' };
+        return { date, startTime, endTime, title };
     }
 
     let startH = parseInt(timeMatch[1]);
     let startM = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
 
-    // 「半」の処理（開始時間）
     const beforeFrom = afterDate.substring(0, timeMatch.index + timeMatch[1].length + 1);
     if (/半/.test(beforeFrom.split(/から|〜|～/)[0])) startM = 30;
 
     let endH = parseInt(timeMatch[4]);
     let endM = timeMatch[5] ? parseInt(timeMatch[5]) : 0;
 
-    // 「半」の処理（終了時間）
     const afterFrom = afterDate.substring(afterDate.search(/から|〜|～|ー/));
     if (/半/.test(afterFrom)) endM = 30;
 
-    // 午後判定（終了時刻が開始より小さく12以下 → 午後に変換）
     if (endH < startH && endH <= 12) endH += 12;
 
     const startTime = `${String(startH).padStart(2,'0')}:${String(startM).padStart(2,'0')}`;
     const endTime = `${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')}`;
 
-    // タイトル抽出：時間の前後のテキストを両方チェック
     const beforeTime = afterDate.substring(0, timeMatch.index).trim();
     const afterTimeStr = afterDate.substring(timeMatch.index + timeMatch[0].length).trim();
     const title = extractTitle(afterTimeStr, defaultTitle, beforeTime);
 
-    return { date, startTime, endTime, title, location: '' };
+    return { date, startTime, endTime, title };
 }
 
-// afterTime: 時間表現の後のテキスト、beforeTime: 時間表現の前のテキスト（「熱海仕事9時から17時」の「熱海仕事」部分）
 function extractTitle(afterTime, defaultTitle, beforeTime = '') {
     let title = defaultTitle || '予定';
 
-    // ① 時間の後のテキストを優先して探す（「9時から17時仕事」の「仕事」）
+    // 時間の後のテキストを優先（「17時仕事」の「仕事」）
     if (afterTime) {
-        // 「まで」「で」「に」「は」「の」「間」「、」など不要な先頭を除去
         const cleaned = afterTime
             .replace(/^[まで間でにはのもかから、,，\s　。．]+/, '')
             .trim();
         if (cleaned) {
             const parts = cleaned.split(/[、,，\s　。．]+/).filter(p => p.trim());
             if (parts.length > 0 && parts[0].trim()) {
-                title = parts[0].trim();
-                return title;
+                return parts[0].trim();
             }
         }
     }
 
-    // ② 時間の後に何もなければ前のテキストを使う（「熱海仕事9時から17時」の「熱海仕事」）
+    // 時間の前のテキストを使う（「熱海仕事9時から17時」の「熱海仕事」）
     if (beforeTime) {
         const bcleaned = beforeTime
             .replace(/^[のはにでもかから、,，\s　。．]+/, '')
@@ -632,10 +592,9 @@ function displayEvents() {
     }
     eventsList.innerHTML = extractedEvents.map(e => `
         <div class="event-item">
-            <div class="event-date">📅 ${e.date}</div>
-            <div class="event-time">⏰ ${e.startTime} → ${e.endTime}</div>
-            <div class="event-title">🏷️ ${e.title}</div>
-            ${e.location ? `<div style="color:#999;font-size:12px">📍 ${e.location}</div>` : ''}
+            <div class="event-date">🗓 ${e.date}</div>
+            <div class="event-time">🕐 ${e.startTime} → ${e.endTime}</div>
+            <div class="event-title">🌸 ${e.title}</div>
         </div>
     `).join('');
 }
@@ -660,7 +619,6 @@ registerBtn.addEventListener('click', async () => {
             successCount++;
         } catch (e) {
             if (e.message && e.message.includes('401')) {
-                // トークン期限切れ → 以降の登録は無意味なので中断
                 googleAccessToken = null;
                 localStorage.removeItem('google_access_token');
                 localStorage.removeItem('google_token_expiry');
@@ -677,7 +635,7 @@ registerBtn.addEventListener('click', async () => {
         showStatus(`✅ ${successCount}件の予定を登録しました！`, 'success');
         clearBtn.click();
     } else if (successCount > 0) {
-        showStatus(`⚠️ ${successCount}件登録成功、${errors.length}件失敗：${errors.join(' / ')}`, 'error');
+        showStatus(`⚠️ ${successCount}件成功、${errors.length}件失敗：${errors.join(' / ')}`, 'error');
         registerBtn.disabled = false;
     } else {
         showStatus(`❌ 登録失敗：${errors.join(' / ')}`, 'error');
@@ -701,7 +659,6 @@ async function createEvent(eventData) {
 
     const body = {
         summary: eventData.title,
-        location: eventData.location || '',
         start: { dateTime: start.toISOString(), timeZone: 'Asia/Tokyo' },
         end: { dateTime: end.toISOString(), timeZone: 'Asia/Tokyo' }
     };
@@ -735,4 +692,3 @@ function showStatus(msg, type) {
 </script>
 </body>
 </html>
-
