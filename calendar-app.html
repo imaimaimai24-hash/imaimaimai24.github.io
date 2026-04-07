@@ -364,7 +364,10 @@ window.addEventListener('load', () => {
         const params = new URLSearchParams(hash.substring(1));
         const error = params.get('error');
         history.replaceState(null, null, window.location.pathname);
-        if (error === 'access_denied') {
+        if (error === 'interaction_required' || error === 'login_required' || error === 'consent_required') {
+            // 自動ログイン失敗 → 手動ボタンで再試行（promptあり）
+            showStatus('🔑 Googleにログインしてください', 'loading');
+        } else if (error === 'access_denied') {
             showStatus('❌ アクセスが拒否されました。Google Cloud Consoleのテストユーザーにあなたのメールを追加してください。', 'error');
         } else {
             showStatus('❌ Google認証エラー: ' + error, 'error');
@@ -390,6 +393,11 @@ window.addEventListener('load', () => {
     if (savedToken && savedExpiry && new Date(savedExpiry) > new Date()) {
         googleAccessToken = savedToken;
         updateAuthUI();
+    } else {
+        // トークンがない or 期限切れ → 自動でGoogleログインへ
+        setTimeout(() => {
+            autoLogin();
+        }, 600);
     }
 
     // 前回登録した予定を復元
@@ -400,6 +408,17 @@ window.addEventListener('load', () => {
 });
 
 // ===== Google認証 =====
+function autoLogin() {
+    const redirectUri = 'https://imaimaimai24-hash.github.io/imaimaimai24.github.io/calendar-app.html';
+    const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+    authUrl.searchParams.append('client_id', GOOGLE_CLIENT_ID);
+    authUrl.searchParams.append('redirect_uri', redirectUri);
+    authUrl.searchParams.append('response_type', 'token');
+    authUrl.searchParams.append('scope', GOOGLE_SCOPES);
+    authUrl.searchParams.append('prompt', 'none'); // 画面を出さずに自動ログイン
+    window.location.href = authUrl.toString();
+}
+
 googleLoginBtn.addEventListener('click', () => {
     if (googleAccessToken) {
         googleAccessToken = null;
