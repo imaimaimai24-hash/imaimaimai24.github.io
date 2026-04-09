@@ -365,8 +365,9 @@ window.addEventListener('load', () => {
         const error = params.get('error');
         history.replaceState(null, null, window.location.pathname);
         if (error === 'interaction_required' || error === 'login_required' || error === 'consent_required') {
-            // 自動ログイン失敗 → 手動ボタンで再試行（promptあり）
-            showStatus('🔑 Googleにログインしてください', 'loading');
+            // サイレントログイン失敗 → 通常のログイン画面へ自動リダイレクト
+            sessionStorage.removeItem('silentAuthTried');
+            setTimeout(() => doRedirectLogin(), 300);
         } else if (error === 'access_denied') {
             showStatus('❌ アクセスが拒否されました。Google Cloud Consoleのテストユーザーにあなたのメールを追加してください。', 'error');
         } else {
@@ -408,14 +409,33 @@ window.addEventListener('load', () => {
 });
 
 // ===== Google認証 =====
+const REDIRECT_URI = 'https://imaimaimai24-hash.github.io/imaimaimai24.github.io/calendar-app.html';
+
 function autoLogin() {
-    const redirectUri = 'https://imaimaimai24-hash.github.io/imaimaimai24.github.io/calendar-app.html';
+    // まずサイレントログインを試みる
+    if (!sessionStorage.getItem('silentAuthTried')) {
+        sessionStorage.setItem('silentAuthTried', '1');
+        const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+        authUrl.searchParams.append('client_id', GOOGLE_CLIENT_ID);
+        authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
+        authUrl.searchParams.append('response_type', 'token');
+        authUrl.searchParams.append('scope', GOOGLE_SCOPES);
+        authUrl.searchParams.append('prompt', 'none');
+        window.location.href = authUrl.toString();
+    } else {
+        // サイレント失敗済み → 通常のログイン画面へ
+        sessionStorage.removeItem('silentAuthTried');
+        doRedirectLogin();
+    }
+}
+
+function doRedirectLogin() {
     const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     authUrl.searchParams.append('client_id', GOOGLE_CLIENT_ID);
-    authUrl.searchParams.append('redirect_uri', redirectUri);
+    authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
     authUrl.searchParams.append('response_type', 'token');
     authUrl.searchParams.append('scope', GOOGLE_SCOPES);
-    authUrl.searchParams.append('prompt', 'none'); // 画面を出さずに自動ログイン
+    authUrl.searchParams.append('prompt', 'select_account');
     window.location.href = authUrl.toString();
 }
 
@@ -428,14 +448,7 @@ googleLoginBtn.addEventListener('click', () => {
         showStatus('ログアウトしました', 'success');
         return;
     }
-    const redirectUri = 'https://imaimaimai24-hash.github.io/imaimaimai24.github.io/calendar-app.html';
-    const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-    authUrl.searchParams.append('client_id', GOOGLE_CLIENT_ID);
-    authUrl.searchParams.append('redirect_uri', redirectUri);
-    authUrl.searchParams.append('response_type', 'token');
-    authUrl.searchParams.append('scope', GOOGLE_SCOPES);
-    authUrl.searchParams.append('prompt', 'consent');
-    window.location.href = authUrl.toString();
+    doRedirectLogin();
 });
 
 function updateAuthUI() {
