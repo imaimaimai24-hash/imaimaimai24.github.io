@@ -274,8 +274,8 @@
         <div class="section">
             <div class="section-title">🏷️ デフォルトタイトル（入力しない場合）</div>
             <select id="titleSelect">
+                <option value="み　仕事" selected>み　仕事</option>
                 <option value="">タイトルを選択（任意）</option>
-                <option value="み　仕事">み　仕事</option>
                 <option value="卓球">卓球</option>
                 <option value="ここせん">ここせん</option>
                 <option value="ひ">ひ</option>
@@ -286,6 +286,14 @@
                 <option value="custom">その他（手動入力）</option>
             </select>
             <input type="text" id="customInput" placeholder="タイトルを入力" style="display:none;">
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 登録先カレンダー・色（ファミリーカレンダー・ピーコック固定） -->
+        <div class="section">
+            <div class="section-title">📅 登録先</div>
+            <div class="info-box" id="calendarInfo">ログインするとファミリーカレンダーを自動で探します…</div>
         </div>
 
         <div class="divider"></div>
@@ -338,15 +346,65 @@ const debugBox = document.getElementById('debugBox');
 const registeredSection = document.getElementById('registeredSection');
 const registeredDivider = document.getElementById('registeredDivider');
 const registeredList = document.getElementById('registeredList');
+const calendarInfo = document.getElementById('calendarInfo');
 
 let extractedEvents = [];
 let googleAccessToken = null;
+
+// ===== 登録先はファミリーカレンダー・色はピーコックに固定 =====
+const EVENT_COLOR_ID = '7'; // ピーコック
+let familyCalendarId = localStorage.getItem('familyCalendarId') || null;
+let familyCalendarName = localStorage.getItem('familyCalendarName') || 'ファミリー';
+
+function updateCalendarInfo() {
+    if (familyCalendarId) {
+        calendarInfo.textContent = `📅 「${familyCalendarName}」カレンダーに 🩵ピーコック色 で登録します`;
+        calendarInfo.style.borderLeftColor = '#66cccc';
+    } else {
+        calendarInfo.textContent = 'ログインするとファミリーカレンダーを自動で探します…';
+    }
+}
+
+// ログイン後にカレンダー一覧からファミリーカレンダーを自動で見つける
+async function findFamilyCalendar() {
+    if (!googleAccessToken) return;
+    try {
+        const res = await fetch(
+            'https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=writer',
+            { headers: { 'Authorization': `Bearer ${googleAccessToken}` } }
+        );
+        if (!res.ok) return; // 失敗時は保存済みのIDをそのまま使う
+        const data = await res.json();
+        const calendars = (data.items || []);
+
+        const family = calendars.find(c =>
+            /ファミリー|家族|family/i.test(c.summaryOverride || c.summary || '') ||
+            /^family/i.test(c.id || ''));
+
+        if (family) {
+            familyCalendarId = family.id;
+            familyCalendarName = family.summaryOverride || family.summary || 'ファミリー';
+            localStorage.setItem('familyCalendarId', familyCalendarId);
+            localStorage.setItem('familyCalendarName', familyCalendarName);
+        } else if (!familyCalendarId) {
+            calendarInfo.textContent = '⚠️ ファミリーカレンダーが見つかりませんでした。Googleカレンダーでファミリーカレンダーが表示されているか確認してください。';
+            updateRegisterBtn();
+            return;
+        }
+        updateCalendarInfo();
+        updateRegisterBtn();
+    } catch (e) { /* 通信エラー時は保存済みのIDをそのまま使う */ }
+}
+
+function updateRegisterBtn() {
+    registerBtn.disabled = extractedEvents.length === 0 || !googleAccessToken || !familyCalendarId;
+}
 
 // ===== 漢字数字→アラビア数字変換 =====
 function kanjiToNum(str) {
     return str
         .replace(/([一二三四五六七八九]?)十([一二三四五六七八九]?)/g, (_, tens, ones) => {
-            const t = tens ? '一二三四五六七八九'.indexOf(tens) + 2 : 1;
+            const t = tens ? '一二三四五六七八九'.indexOf(tens) + 1 : 1;
             const o = ones ? '一二三四五六七八九'.indexOf(ones) + 1 : 0;
             return String(t * 10 + o);
         })
@@ -358,6 +416,14 @@ function kanjiToNum(str) {
 
 // ===== ページ読み込み時：トークン確認 =====
 window.addEventListener('load', () => {
+    updateCalendarInfo();
+
+    // 前回登録した予定を復元（ログイン直後でも表示されるよう最初に実行）
+    try {
+        const last = localStorage.getItem('lastRegistered');
+        if (last) showRegistered(JSON.parse(last));
+    } catch(e) {}
+
     const hash = window.location.hash;
 
     if (hash && hash.includes('error')) {
@@ -385,6 +451,7 @@ window.addEventListener('load', () => {
         localStorage.setItem('google_token_expiry', expiry.toISOString());
         history.replaceState(null, null, window.location.pathname);
         updateAuthUI();
+        findFamilyCalendar();
         showStatus('✅ Googleアカウントでログインしました！', 'success');
         return;
     }
@@ -394,6 +461,7 @@ window.addEventListener('load', () => {
     if (savedToken && savedExpiry && new Date(savedExpiry) > new Date()) {
         googleAccessToken = savedToken;
         updateAuthUI();
+        findFamilyCalendar();
     } else {
         // トークンがない or 期限切れ → 自動でGoogleログインへ
         setTimeout(() => {
@@ -401,11 +469,6 @@ window.addEventListener('load', () => {
         }, 600);
     }
 
-    // 前回登録した予定を復元
-    try {
-        const last = localStorage.getItem('lastRegistered');
-        if (last) showRegistered(JSON.parse(last));
-    } catch(e) {}
 });
 
 // ===== Google認証 =====
@@ -511,7 +574,7 @@ function parseEvents() {
     }
 
     displayEvents();
-    registerBtn.disabled = extractedEvents.length === 0 || !googleAccessToken;
+    updateRegisterBtn();
 
     if (segments.length > 0 && extractedEvents.length < segments.length) {
         const missed = segments.length - extractedEvents.length;
@@ -556,14 +619,14 @@ function parseSegment(seg, defaultTitle) {
     let startH = parseInt(timeMatch[1]);
     let startM = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
 
-    const beforeFrom = afterDate.substring(0, timeMatch.index + timeMatch[1].length + 1);
-    if (/半/.test(beforeFrom.split(/から|〜|～/)[0])) startM = 30;
+    // 「10時半」のような「半」をマッチした時間文字列から判定する
+    const matchedParts = timeMatch[0].split(/から|〜|～|ー|まで/);
+    if (/半/.test(matchedParts[0])) startM = 30;
 
     let endH = parseInt(timeMatch[4]);
     let endM = timeMatch[5] ? parseInt(timeMatch[5]) : 0;
 
-    const afterFrom = afterDate.substring(afterDate.search(/から|〜|～|ー/));
-    if (/半/.test(afterFrom)) endM = 30;
+    if (/半/.test(matchedParts.slice(1).join(''))) endM = 30;
 
     if (endH < startH && endH <= 12) endH += 12;
 
@@ -625,6 +688,10 @@ registerBtn.addEventListener('click', async () => {
         showStatus('先にGoogleでサインインしてください', 'error');
         return;
     }
+    if (!familyCalendarId) {
+        showStatus('⚠️ ファミリーカレンダーが見つかっていません。ページを再読み込みしてみてください。', 'error');
+        return;
+    }
     if (extractedEvents.length === 0) return;
 
     registerBtn.disabled = true;
@@ -652,7 +719,7 @@ registerBtn.addEventListener('click', async () => {
     }
 
     if (errors.length === 0) {
-        showStatus(`✅ ${successCount}件の予定を登録しました！`, 'success');
+        showStatus(`✅ ${successCount}件の予定を「${familyCalendarName}」カレンダーに登録しました！`, 'success');
         addToRegistered(extractedEvents);
         clearBtn.click();
     } else if (successCount > 0) {
@@ -688,9 +755,12 @@ async function createEvent(eventData) {
         start: { dateTime: start.toISOString(), timeZone: 'Asia/Tokyo' },
         end: { dateTime: end.toISOString(), timeZone: 'Asia/Tokyo' }
     };
+    body.colorId = EVENT_COLOR_ID; // ピーコック固定
+
+    const calendarId = familyCalendarId || GOOGLE_CALENDAR_ID;
 
     const res = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/${GOOGLE_CALENDAR_ID}/events`,
+        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
         {
             method: 'POST',
             headers: {
